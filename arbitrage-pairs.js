@@ -32,7 +32,7 @@ let proxies = [
     'https://cors-anywhere.herokuapp.com/',
 ]
 
-;(async function main () {
+;(async function main (cb) {
 
     if (process.argv.length > 3) {
 
@@ -131,7 +131,13 @@ let proxies = [
           for (var j = 0 ; j < ids.length ; j++ /*let id of ids*/) {
             if (exchanges[ids[j]].symbols.indexOf (arbitrage.symbols[i]) >= 0) {
               //console.log(arbitrage.symbols[i]+" have order book "+ ids[j])
-              arbitrage.exchanges[i].orderbook[j] = await exchanges[ids[j]].fetchOrderBook (arbitrage.symbols[i])
+              try {
+                arbitrage.exchanges[i].orderbook[j] = await exchanges[ids[j]].fetchOrderBook (arbitrage.symbols[i])
+                if(!arbitrage.exchanges[i].orderbook[j]) throw "No orderbookl found";
+               } catch(e) {
+                   throw e;
+               }
+
               //console.log(id)
             }
           }
@@ -169,16 +175,26 @@ function compareAll (oB, ids, symbol ) {
         if(i != j ) {
         //  console.log("i = "+i+" j = "+j)
 
-          oB.spreads[c] = oB.orderbook[i].bids[0][0] / oB.orderbook[j].asks[0][0]
-           //console.log(ids[i]+" et REVENTE sur "+ids[j]+"     => Gain = "+(oB.spreads[c]-1)*100 +" % ")
-          if(oB.spreads[c] > spreadMax){
-            spreadMax = oB.spreads[c] ;
-            imax = i ;
-            jmax = j ;
-          }
+        if(oB.orderbook[i].bids != null && oB.orderbook[j].asks != null ) {
+        if(oB.orderbook[i].bids[0] != null && oB.orderbook[j].asks[0] != null) {
+          if(oB.orderbook[i].bids[0][0] != null && oB.orderbook[j].asks[0][0] != null ) {
 
-          c++
-         }
+          if(oB.orderbook[j].asks[0][0] != 0  ) {
+
+              oB.spreads[c] = oB.orderbook[i].bids[0][0] / oB.orderbook[j].asks[0][0]
+               //console.log(ids[i]+" et REVENTE sur "+ids[j]+"     => Gain = "+(oB.spreads[c]-1)*100 +" % ")
+              if(oB.spreads[c] > spreadMax){
+                spreadMax = oB.spreads[c] ;
+                imax = i ;
+                jmax = j ;
+              }
+
+              c++
+          }
+        }
+            }
+          }
+        }
       }
     }
   }
