@@ -132,16 +132,19 @@ let proxies = [
             if (exchanges[ids[j]].symbols.indexOf (arbitrage.symbols[i]) >= 0) {
               //console.log(arbitrage.symbols[i]+" have order book "+ ids[j])
               try {
+                var error = false ;
                 arbitrage.exchanges[i].orderbook[j] = await exchanges[ids[j]].fetchOrderBook (arbitrage.symbols[i])
-                if(!arbitrage.exchanges[i].orderbook[j]) throw "No orderbookl found";
+                if(!arbitrage.exchanges[i].orderbook[j]) console.log("No orderbookl found");
                } catch(e) {
-                   throw e;
+                   console.log(e);
+                   var error = true;
                }
 
               //console.log(id)
             }
           }
         //  console.log(arbitrage.exchanges[i])
+        if(!error)
           compareAll(arbitrage.exchanges[i], ids, arbitrage.symbols[i])
         }
 
