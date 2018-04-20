@@ -52,6 +52,8 @@ let proxies = [
 
             // load all markets from the exchange
             let markets = await exchange.loadMarkets ()
+            console.log(markets.has)
+            // var createAdr = await exchange.createDepositAddress('ABY/BTC', "")
 
             // basic round-robin proxy scheduler
             let currentProxy = 0
@@ -118,7 +120,6 @@ let proxies = [
 
 
 
-
         var arbitrage = {} ;
         arbitrage.symbols = [] ;
         arbitrage.exchanges = [] ;
@@ -143,7 +144,7 @@ let proxies = [
               //console.log(id)
             }
           }
-        //  console.log(arbitrage.exchanges[i])
+      //  console.log(arbitrage.exchanges[i])
         if(!error)
           compareAll(arbitrage.exchanges[i], ids, arbitrage.symbols[i])
         }
@@ -203,11 +204,13 @@ function compareAll (oB, ids, symbol ) {
   }
   if(imax != null && jmax != null ){
     if((spreadMax-1)*100 > 1 ) {
-    var volume = Math.min(oB.orderbook[jmax].asks[0][1] , oB.orderbook[imax].bids[0][1])
-    console.log(symbol+" : Achat de "+volume+" sur "+ids[jmax]+" à "+oB.orderbook[jmax].asks[0][0]+" et Revente sur "+ids[imax]+" à "+oB.orderbook[imax].bids[0][0]+"   => Gain = "+(spreadMax-1)*100 + " % ")
+      if(symbol != 'STEEM/BTC' && symbol != 'RADS/BTC' && symbol != 'NEOS/BTC' && symbol != 'SBD/BTC') {// )
+        var volume = Math.min(oB.orderbook[jmax].asks[0][1] , oB.orderbook[imax].bids[0][1])
+        console.log(symbol+" : Achat de "+volume+" sur "+ids[jmax]+" à "+oB.orderbook[jmax].asks[0][0]+" et Revente sur "+ids[imax]+" à "+oB.orderbook[imax].bids[0][0]+"   => Gain = "+(spreadMax-1)*100 + " % ")
+      }
     } else
         console.log(symbol+": "+(spreadMax-1)*100 + " % ")
-  }
+      }
 
 
   // console.log("Prix d'achat : "+oB.books[imax].asks[0][0]+" Volume : "+oB.books[imax].asks[0][1])
