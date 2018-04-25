@@ -1,4 +1,10 @@
 "use strict";
+var config = require('./config');
+var symbol_excluded = require('./symbol_excluded');
+console.log("Symbol excluded (wallet update, deposit maintenance, bug, etc): ")
+console.log(symbol_excluded)
+
+var request = require("request")
 
 const ccxt      = require ('ccxt')
 const asTable   = require ('as-table')
@@ -213,20 +219,26 @@ function compareAll (oB, ids, symbol, exchanges ) {
       }
     }
   }
+
   if(imax != null && jmax != null ){
     if(exchanges[ids[imax]].fees.trading.taker != null && exchanges[ids[jmax]].fees.trading.taker != null ) {
       var takerI = exchanges[ids[imax]].fees.trading.taker
       var takerJ = exchanges[ids[jmax]].fees.trading.taker
     }
-    if((spreadMax-takerI-takerJ-1)*100 > 0.8 ) {
-      if(symbol != 'STEEM/BTC' && symbol != 'RADS/BTC' && symbol != 'NEOS/BTC' && symbol != 'SBD/BTC') {// )
+
+    if((spreadMax-takerI-takerJ-1)*100 > 0.6 ) {
+      if(!symbol_excluded.includes(symbol)){
+      //if(symbol != 'STEEM/BTC'/* && symbol != 'RADS/BTC' && symbol != 'NEOS/BTC' && symbol != 'SBD/BTC' && symbol != 'STEEM/ETH' && symbol != 'XRB/BTC' && symbol != 'XRB/BTC' && symbol != 'BCD/BTC' && symbol != 'BCD/ETH'*/) {// )
         var volume = Math.min(oB.orderbook[jmax].asks[0][1] , oB.orderbook[imax].bids[0][1])
-        //console.log(exchange)
-        console.log()
         // if(markets[symbol].taker != null) {
         // markets['ETH/BTC'].taker
         // }
         console.log(symbol+" : Achat de "+volume+" sur "+ids[jmax]+" à "+oB.orderbook[jmax].asks[0][0]+" taker : "+takerJ+" et Revente sur "+ids[imax]+" taker : "+takerJ+" à "+oB.orderbook[imax].bids[0][0]+"   => Gain = "+(spreadMax-1-takerI-takerJ)*100 + " % ")
+        if(ids[jmax] == 'exmo' || ids[imax] == 'exmo') {
+          var string_notification = symbol+" : Achat de "+volume+" sur "+ids[jmax]+" à "+oB.orderbook[jmax].asks[0][0]+" taker : "+takerJ+" et Revente sur "+ids[imax]+" taker : "+takerJ+" à "+oB.orderbook[imax].bids[0][0]+"   => Gain = "+(spreadMax-1-takerI-takerJ)*100 + " % "
+          request.post('https://api.pushover.net/1/messages.json', {form:{token:config.apiKeyPushoverToken,user:config.apiKeyPushoverUser, message:string_notification}})
+          console.log("Send notification")
+        }
       }
     } else
         console.log(symbol+": "+(spreadMax-1-takerI-takerJ)*100 + " % ")
