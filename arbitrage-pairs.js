@@ -1,6 +1,6 @@
 "use strict";
-var config = require('./config');
-var symbol_excluded = require('./symbol_excluded');
+var config = require('./config/config');
+var symbol_excluded = require('./config/symbol_excluded');
 console.log("Symbol excluded (wallet update, deposit maintenance, bug, etc): ")
 console.log(symbol_excluded)
 
