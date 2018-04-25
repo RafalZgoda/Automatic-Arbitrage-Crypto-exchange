@@ -13,10 +13,16 @@
   "keywords": [
     "Arbitrage"
   ],
-  "author": "Zgoda Rafl",
+  "author": "Zgoda Rafal",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ZgodaRafal/Automatic-Arbitrage-Crypto-exchange/issues"
   },
-  "homepage": "https://github.com/ZgodaRafal/Automatic-Arbitrage-Crypto-exchange#readme"
+  "homepage": "https://github.com/ZgodaRafal/Automatic-Arbitrage-Crypto-exchange#readme",
+  "dependencies": {
+    "as-table": "^1.0.31",
+    "ccxt": "^1.13.42",
+    "ololog": "^1.1.87",
+    "request": "^2.85.0"
+  }
 }
