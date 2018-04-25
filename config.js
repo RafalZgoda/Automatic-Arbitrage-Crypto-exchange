@@ -1,5 +1,5 @@
 var config = {} ;
-config.apiKeyPushoverToken = '****' ;
+config.apiKeyPushoverToken = '***' ;
 config.apiKeyPushoverUser = '****' ;
 
 
