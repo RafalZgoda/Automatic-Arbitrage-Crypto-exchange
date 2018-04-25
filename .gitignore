@@ -1,2 +1,3 @@
 node_modules/
 ccxt/
+package-lock.json
