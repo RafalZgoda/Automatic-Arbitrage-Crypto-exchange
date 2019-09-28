@@ -11,6 +11,7 @@ npm install
 ```
 
 ## Use 
+Launch the command with a list of exchange that you want (complete list there: https://github.com/ccxt/ccxt)
 ```
 node arbitrage-pairs.js poloniex bittrex exmo kucoin binance
 ```
